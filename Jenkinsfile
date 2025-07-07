@@ -5,6 +5,7 @@ pipeline {
         PROJECT = 'expense'
         COMPONENT = 'backend'
         appVersion = ''
+        ACC_ID = '178173414156'
 
     }
     options { disableConcurrentBuilds() 
@@ -44,9 +45,15 @@ pipeline {
         stage('Docker Build'){
             steps{
                 script{
-                    sh """
-                        docker build -t backend:v1.0.0 . 
-                    """
+                    withAWS(region: 'us-east-1', credentials: 'aws-creds'){
+                        sh """
+
+                        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com
+
+
+
+                        """
+                    }
                 }
             }
         }
