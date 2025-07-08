@@ -11,17 +11,9 @@ pipeline {
     options { disableConcurrentBuilds() 
               timeout(time: 30, unit: 'MINUTES')
     }
-/*     parameters {
-        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-
-        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-
-        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-
-        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-
-        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
-    }  */
+    parameters {     
+        booleanParam(name: 'deploy', defaultValue: 'false', description: 'Enter')
+    }  
 
     stages {
         stage('Read Version') {
@@ -59,6 +51,16 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('Trigger Deploy'){
+                    when { 
+                        expression {  params.deploy }
+                    }
+                    steps{
+                        build job: 'backend-cd', parameters: [string(name: 'version', value: "${appVersion}")], wait: false 
+                    }
+            
+
         }
         
     }
