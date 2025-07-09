@@ -34,6 +34,17 @@ pipeline {
                }
             }
         }
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'sonar-scanner-7.1';
+            }
+            steps {
+              withSonarQubeEnv('sonar-scanner-7.1') {
+                sh "${scannerHome}/bin/sonar-scanner"
+                // This is generic command works for any language
+              }
+            }
+        }
         stage('Docker Build'){
             steps{
                 script{
